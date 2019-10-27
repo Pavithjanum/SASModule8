@@ -1,15 +1,16 @@
-DATA global_stuffs;
+/*Don’t you see, there isn’t a ‘$’ sign in front of Profit Variables? Add the dollar sign
+before the profit values and store them within a new variable named ‘Gain’. Also
+make sure that the values don’t carry decimal places*/
 
-infile cards dlm=',';
+data inf_globalsale4(rename=(Profit=Gain));
 
-informat Cust_ID 10. Cust_Name$20. Cust_date ddmmyy10. amount;
+set inf_globalsale3;
 
-input Cust_ID Cust_Name$ Cust_date amount;
+format Sales dollar. Profit dollar.;
 
-format Cust_ID 10. Cust_Name$20. Cust_date ddmmyy10.  amount dollar12.;
+Sales=round(Sales);
+Profit=round(Profit);
+run;
 
-Cards;
-376020,Pavithra Ulaganathan,11-11-2016,2888
-;
-
+proc print data = inf_globalsale4;
 run;
