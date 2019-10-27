@@ -1,16 +1,27 @@
-/*Use Arrays to perform the same operation as above and increase the quantity
-accordingly*/
+*2;
 
-data inf_globalsale3;
-array globalarray(4) Profit Sales Quantity Quantity_incresed;
-
-set inf_globalsale1;
-
-if globalarray(1)>globalarray(2)*0.4 then
-globalarray(4) = 15-globalarray(3);
-if globalarray(1)>globalarray(2)*0.4 then
-globalarray(3) = 15 ;
+proc corr data=inf_globalsale3;
+var Sales Profit;
 run;
 
-proc print data = inf_globalsale3;
+proc means data=inf_globalsale3;
+class Sales_wrt_Average;
+var Sales Profit;
 run;
+
+proc summary data=inf_globalsale3 print;
+class Sales_wrt_Average;
+var Sales Profit;
+run;
+
+proc rank data=inf_globalsale3 out=inf_globalrank groups=3;
+var Profit; ranks global_rank;
+run;
+
+proc sort data=inf_globalrank;
+by global_rank;
+run;
+
+proc print data=inf_globalrank;
+run;
+

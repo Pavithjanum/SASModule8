@@ -1,6 +1,9 @@
-/*To maximize the profit, check the products providing profit more than 40% of the
-sale amount and increase the quantity of those products to 15. Also check, by what
-amount do you need to increase the quantity (Consider the dataset inf_globalsale)*/
+* Module 3: Advanced SAS Procedure's;
+
+*1;
+
+*proc import datafile='/folders/myfolders/sasuser.v94/458_dataset_v2.0.csv' dbms=csv out=global_dataset replace;
+*run;
 
 data inf_globalsale1;
 
@@ -15,18 +18,58 @@ input Order_ID$ Order_Date Ship_Date Customer_ID$ Segment$ City$ State$ Country$
 Discount Profit;
 run;
 
-*proc contents data=inf_globalsale1;
-*run;
+proc contents data=inf_globalsale1;
+run;
+
+proc means data=inf_globalsale1;
+var Sales; /*2670.69*/
+run;
+
+proc format library= WORK.FORMATS;
+value $sales_fmt '0'='-Average' '1'='+Average';
+run;
 
 data inf_globalsale2;
-
 set inf_globalsale1;
-
-if Profit>Sales*0.4 then
-Quantity_incresed = 15-Quantity;
-if Profit>Sales*0.4 then
-Quantity = 15 ;
+format Sales_wrt_Average$10. ;
+if Sales < 2670.69 then Sales_wrt_Average = '0';
+if Sales > 2670.69 then Sales_wrt_Average = '1';
 run;
 
-proc print data = inf_globalsale2;
+data inf_globalsale3;
+set  inf_globalsale2;
+
+format Sales_wrt_Average sales_fmt;
 run;
+
+*proc catalog cat=WORK.formats;
+*contents;
+*run;
+
+proc print data=inf_globalsale3;
+run;
+
+data inf_globalsale3;
+set inf_globalsale2;
+if Sales_wrt_Average = '0' then Sales_wrt_Average='-Average';
+if Sales_wrt_Average = '1' then Sales_wrt_Average='+Average';
+run;
+
+proc print data=inf_globalsale3;
+run;
+
+proc surveyselect data=inf_globalsale3 method=srs seed=4 sampsize=10 out=global_samp;
+run;
+
+proc print data=global_samp;
+run;
+
+proc freq data=global_samp;
+tables Sales_wrt_Average;
+run;
+
+
+
+
+
+
